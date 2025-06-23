@@ -1,38 +1,235 @@
-.App {
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+}
+
+.main-bg {
+  background-color: #222;
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.hero-section {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 2rem 2rem; /* Top padding để tránh header fixed */
+  position: relative;
+}
+
+.hero-image-placeholder {
+  width: 90vw;
+  max-width: 90vw;
+  aspect-ratio: 21/9;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.hero-description {
+  max-width: 600px;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #ccc;
+}
+
+/* Selected Works Section */
+.selected-works-section {
+  padding: 4rem 2rem;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.selected-works-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  letter-spacing: 2px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.highlight {
+  color: #ED091E;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.work-item {
+  aspect-ratio: 16/9;
+  background-color: #333;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  color: #666;
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+  transition: none;
 }
 
-.App-link {
-  color: #61dafb;
+.work-item .work-hover-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ED091E;
+  font-size: 1.2rem;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  text-align: center;
+  z-index: 2;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.work-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1;
+}
+
+.work-item:hover::after {
+  opacity: 1;
+}
+
+.work-item:hover .work-hover-text {
+  opacity: 1;
+}
+
+.work-item.empty {
+  border: 2px dashed #555;
+}
+
+/* Visual Gallery Section */
+.visual-gallery-section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.visual-gallery-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  letter-spacing: 2px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  aspect-ratio: 1/1;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1rem;
+}
+
+.gallery-item.empty {
+  border: 2px dashed #555;
+}
+
+/* Footer Section */
+.footer-section {
+  padding: 4rem 2rem 2rem;
+  background-color: #222;
+  text-align: center;
+}
+
+.footer-contact h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-info div {
+  text-align: left;
+}
+
+.footer-info strong {
+  font-size: 1.2rem;
+  color: #ED091E;
+}
+
+.footer-location {
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 1rem;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .hero-description {
+    font-size: 0.9rem;
+  }
+  
+  .selected-works-section h2,
+  .visual-gallery-section h2,
+  .footer-contact h3 {
+    font-size: 2rem;
+  }
+  
+  .works-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .footer-info {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+  
+  .footer-info div {
+    text-align: center;
   }
 }
