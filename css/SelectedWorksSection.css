@@ -1,0 +1,82 @@
+/* Selected Works Section */
+.selected-works-section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.selected-works-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  letter-spacing: 2px;
+}
+
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.work-item {
+  aspect-ratio: 16/9;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+  transition: none;
+}
+
+.work-item .work-hover-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ED091E;
+  font-size: 1.2rem;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  text-align: center;
+  z-index: 2;
+}
+
+.work-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1;
+}
+
+.work-item:hover::after {
+  opacity: 1;
+}
+
+.work-item:hover .work-hover-text {
+  opacity: 1;
+}
+
+.work-item.empty {
+  border: 2px dashed #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .selected-works-section h2 {
+    font-size: 2rem;
+  }
+  
+  .works-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

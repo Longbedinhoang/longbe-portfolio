@@ -1,4 +1,4 @@
-/* Header Styles (rút gọn) */
+/* Header Styles */
 .header {
   position: fixed;
   top: 0;
@@ -57,16 +57,5 @@
   
   .nav-menu a {
     font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .nav-menu ul {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  
-  .header {
-    padding: 1rem 0;
   }
 }

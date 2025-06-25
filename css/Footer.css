@@ -1,0 +1,51 @@
+/* Footer Section */
+.footer-section {
+  padding: 4rem 2rem 2rem;
+  background-color: #222;
+  text-align: center;
+}
+
+.footer-contact h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-info div {
+  text-align: left;
+}
+
+.footer-info strong {
+  font-size: 1.2rem;
+  color: #ED091E;
+}
+
+.footer-location {
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-info {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+  
+  .footer-info div {
+    text-align: center;
+  }
+}

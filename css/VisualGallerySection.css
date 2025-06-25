@@ -1,0 +1,46 @@
+/* Visual Gallery Section */
+.visual-gallery-section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.visual-gallery-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  letter-spacing: 2px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  aspect-ratio: 1/1;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1rem;
+}
+
+.gallery-item.empty {
+  border: 2px dashed #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .visual-gallery-section h2 {
+    font-size: 2rem;
+  }
+  
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
