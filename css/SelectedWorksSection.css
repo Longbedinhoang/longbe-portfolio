@@ -30,6 +30,15 @@
   position: relative;
   overflow: hidden;
   transition: none;
+  padding: 0;
+}
+
+.work-item iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+  display: block;
 }
 
 .work-item .work-hover-text {
@@ -37,14 +46,18 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #ED091E;
+  color: #fff;
   font-size: 1.2rem;
-  font-weight: bold;
+  font-weight: normal;
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
   text-align: center;
   z-index: 2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 90%;
 }
 
 .work-item::after {
@@ -59,6 +72,7 @@
 
 .work-item:hover::after {
   opacity: 1;
+  background: rgba(0,0,0,0.85); /* Tối hơn khi hover */
 }
 
 .work-item:hover .work-hover-text {
@@ -67,6 +81,48 @@
 
 .work-item.empty {
   border: 2px dashed #555;
+}
+
+/* Video Overlay */
+.video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.video-overlay-content {
+  position: relative;
+  width: 80vw;
+  max-width: 80vw;
+  aspect-ratio: 16/9;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-responsive {
+  width: 100%;
+  height: 100%;
+}
+
+.close-video-overlay {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  font-size: 2.5rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
 }
 
 /* Responsive Design */
@@ -78,5 +134,11 @@
   .works-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .video-overlay-content {
+    width: 98vw;
+    max-width: 98vw;
+    aspect-ratio: 16/9;
   }
 }

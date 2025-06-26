@@ -8,11 +8,11 @@
 body {
   font-family: 'Arial', sans-serif;
   line-height: 1.6;
+  background: #222; /* Đặt màu nền xám đậm đúng như hiện tại */
+  color: #fff;
 }
 
 .main-bg {
-  background-color: #222;
-  color: #fff;
   min-height: 100vh;
 }
 
