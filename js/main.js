@@ -1,5 +1,55 @@
+// Mobile Detection Function
+function isMobileDevice() {
+    // Check user agent for mobile devices
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    
+    // Check for mobile keywords in user agent
+    const mobileKeywords = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i;
+    
+    // Check screen width (mobile typically < 768px)
+    const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    
+    // Check touch support
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    return mobileKeywords.test(userAgent) || screenWidth < 768 || hasTouch;
+}
+
+// Disable Hero Section on Mobile
+function disableHeroSectionOnMobile() {
+    if (isMobileDevice()) {
+        // Hide hero section
+        const heroContainer = document.getElementById('hero-container');
+        if (heroContainer) {
+            heroContainer.style.display = 'none';
+        }
+        
+        // Hide hero loading overlay
+        const heroLoading = document.getElementById('hero-loading');
+        if (heroLoading) {
+            heroLoading.style.display = 'none';
+        }
+        
+        // Hide scroll indicator if it exists
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+            scrollIndicator.style.display = 'none';
+        }
+        
+        // Adjust body padding/margin if needed (remove hero space)
+        document.body.style.paddingTop = '0';
+        
+        console.log('Hero section disabled on mobile device');
+        return true;
+    }
+    return false;
+}
+
 // Video Darkening Effect on Scroll
 function initVideoScrollEffect() {
+    // Skip if mobile device
+    if (isMobileDevice()) return;
+    
     const heroVideo = document.querySelector('.hero-bg-fixed');
     const heroVideoOverlay = document.querySelector('.hero-bg-fixed::after');
     
@@ -102,14 +152,21 @@ class ComponentLoader {
     }
 
     static async loadAllComponents() {
-        // Load all components
-        await Promise.all([
+        // Prepare components to load
+        const componentsToLoad = [
             this.loadComponent('components/Header.html', 'header-container'),
-            this.loadComponent('pages/HeroSection.html', 'hero-container'),
             this.loadComponent('pages/SelectedWorksSection.html', 'works-container'),
             this.loadComponent('pages/VisualGallerySection.html', 'gallery-container'),
             this.loadComponent('components/Footer.html', 'footer-container')
-        ]);
+        ];
+        
+        // Only load hero section if not on mobile
+        if (!isMobileDevice()) {
+            componentsToLoad.push(this.loadComponent('pages/HeroSection.html', 'hero-container'));
+        }
+        
+        // Load all components
+        await Promise.all(componentsToLoad);
         
         // Initialize navigation after components are loaded
         NavigationManager.init();
@@ -212,7 +269,17 @@ function fetchYouTubeTitle(videoId, elId) {
     .then(res => res.json())
     .then(data => {
       var el = document.getElementById(elId);
-      if (el && data.title) el.textContent = data.title;
+      if (el && data.title) {
+        el.textContent = data.title;
+        // Đảm bảo title xuống dòng nếu quá dài (phòng trường hợp CSS bị ghi đè)
+        el.style.whiteSpace = 'normal';
+        el.style.wordBreak = 'break-word';
+        el.style.fontSize = '0.95rem';
+        el.style.lineHeight = '1.3';
+        el.style.textAlign = 'center';
+        el.style.maxWidth = '95%';
+        el.style.margin = '0 auto';
+      }
     });
 }
 ///call video titles
@@ -221,9 +288,13 @@ fetchYouTubeTitle('buAZBDrp1t0', 'work-video-2-title');
 fetchYouTubeTitle('6URs9GMbSf8', 'work-video-3-title');
 fetchYouTubeTitle('oRlVs-3AuxE', 'work-video-4-title');
 fetchYouTubeTitle('XyMhh_qggus', 'work-video-5-title');
+fetchYouTubeTitle('Tj9cdjSxh88', 'work-video-6-title');
 
 // Scroll Indicator Click Handler
 function initScrollIndicator() {
+    // Skip if mobile device
+    if (isMobileDevice()) return;
+    
     const scrollIndicator = document.querySelector('.scroll-indicator');
     if (scrollIndicator) {
         scrollIndicator.addEventListener('click', () => {
@@ -239,23 +310,22 @@ function initScrollIndicator() {
 
 // Gallery Image Sizing
 function initGalleryImageSizing() {
-    const galleryItems = document.querySelectorAll('.gallery-item img');
+    const galleryItems = document.querySelectorAll('.gallery-item');
     
-    galleryItems.forEach(img => {
+    galleryItems.forEach(item => {
+        const img = item.querySelector('img');
+        if (!img) return;
+        
         img.onload = function() {
-            const aspectRatio = this.naturalHeight / this.naturalWidth;
+            // Hiển thị ảnh 100% không crop, div sẽ theo kích thước ảnh
+            this.style.width = '100%';
+            this.style.height = 'auto';
+            this.style.objectFit = 'contain';
+            this.style.display = 'block';
             
-            // Nếu ảnh có chiều dài lớn hơn rộng (portrait)
-            if (aspectRatio > 1) {
-                this.style.width = 'auto';
-                this.style.height = '100%';
-                this.style.objectFit = 'cover';
-            } else {
-                // Landscape hoặc square
-                this.style.width = '100%';
-                this.style.height = '100%';
-                this.style.objectFit = 'cover';
-            }
+            // Đặt kích thước div theo ảnh
+            item.style.width = 'auto';
+            item.style.height = 'auto';
         };
         
         // Trigger onload if image is already loaded
@@ -265,13 +335,32 @@ function initGalleryImageSizing() {
     });
 }
 
+// Gallery Expand Handler
+function initGalleryExpand() {
+    const gallerySection = document.querySelector('.visual-gallery-section');
+    const expandIndicator = document.querySelector('.gallery-expand-indicator');
+    
+    if (expandIndicator && gallerySection) {
+        expandIndicator.addEventListener('click', () => {
+            gallerySection.classList.add('expanded');
+            expandIndicator.classList.add('hidden');
+        });
+    }
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if mobile device
+    const isMobile = isMobileDevice();
+    
     ComponentLoader.loadAllComponents();
     // Initialize video scroll effect after components load
     setTimeout(() => {
-        initVideoScrollEffect();
-        initScrollIndicator();
+        if (!isMobile) {
+            initVideoScrollEffect();
+            initScrollIndicator();
+        }
         initGalleryImageSizing();
+        initGalleryExpand();
     }, 500);
 });
