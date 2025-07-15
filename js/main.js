@@ -210,13 +210,36 @@ class NavigationManager {
 
 // Video Overlay - Handle video overlay functionality
 (function() {
-  // Hàm mở overlay với src động
+  // Function to extract YouTube video ID from embed URL
+  function extractYouTubeVideoId(url) {
+    // Handle both embed URLs and regular URLs, with or without parameters
+    const match = url.match(/(?:youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : null;
+  }
+  
+  // Function to open YouTube app on mobile
+  function openYouTubeApp(videoId) {
+    console.log('Opening YouTube app for video:', videoId);
+    const youtubeAppUrl = `youtube://watch?v=${videoId}`;
+    const youtubeWebUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    
+    // Try to open YouTube app first
+    window.location.href = youtubeAppUrl;
+    
+    // Fallback to web version after a short delay if app doesn't open
+    setTimeout(() => {
+      window.open(youtubeWebUrl, '_blank');
+    }, 500);
+  }
+  
+  // Hàm mở overlay với src động (desktop only)
   function openVideoOverlay(videoSrc) {
     var overlay = document.getElementById('video-overlay');
     var iframe = overlay.querySelector('iframe');
     overlay.style.display = 'flex';
     iframe.src = videoSrc;
   }
+  
   // Hàm đóng overlay và dừng video
   function closeVideoOverlay() {
     var overlay = document.getElementById('video-overlay');
@@ -224,6 +247,7 @@ class NavigationManager {
     overlay.style.display = 'none';
     iframe.src = '';
   }
+  
   // Gán sự kiện cho nút đóng và overlay
   function setupVideoOverlayEvents() {
     var overlay = document.getElementById('video-overlay');
@@ -235,32 +259,54 @@ class NavigationManager {
       };
     }
   }
-  // Gán sự kiện cho các thumbnail video
+  
+  // Gán sự kiện cho các thumbnail video với mobile detection
   function setupAllVideoThumbs() {
     var thumbs = document.querySelectorAll('[data-video-src]');
     thumbs.forEach(function(thumb) {
       thumb.onclick = function() {
         var src = thumb.getAttribute('data-video-src');
-        openVideoOverlay(src);
+        
+        // Check if mobile device
+        if (isMobileDevice()) {
+          // Extract video ID and open YouTube app
+          var videoId = extractYouTubeVideoId(src);
+          if (videoId) {
+            openYouTubeApp(videoId);
+          }
+        } else {
+          // Desktop: open video overlay
+          openVideoOverlay(src);
+        }
       };
     });
   }
   // Khởi tạo
   function initVideoOverlay() {
-    setupVideoOverlayEvents();
+    // Only setup overlay events for desktop
+    if (!isMobileDevice()) {
+      setupVideoOverlayEvents();
+    }
     setupAllVideoThumbs();
   }
+  
   // Đảm bảo chạy sau khi DOM và component đã render
   function waitForDOM() {
-    if (document.getElementById('video-overlay')) {
+    // For mobile, we don't need to wait for video-overlay element
+    if (isMobileDevice()) {
+      initVideoOverlay();
+    } else if (document.getElementById('video-overlay')) {
       initVideoOverlay();
     } else {
       setTimeout(waitForDOM, 200);
     }
   }
+  
   waitForDOM();
+  
   // Export global để bạn có thể gọi openVideoOverlay(src) ở bất kỳ đâu
   window.openVideoOverlay = openVideoOverlay;
+  window.openYouTubeApp = openYouTubeApp;
 })();
 
 // --- Lấy title video YouTube và cập nhật vào .work-hover-text ---
