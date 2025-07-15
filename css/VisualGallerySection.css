@@ -2,6 +2,7 @@
 .visual-gallery-section {
   padding: 4rem 2rem;
   text-align: center;
+  background-color: #1A1A1A;
 }
 
 .visual-gallery-section h2 {
@@ -27,6 +28,25 @@
   justify-content: center;
   color: #666;
   font-size: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item img[src*=".JPG"],
+.gallery-item img[src*=".jpg"] {
+  object-fit: cover;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
 }
 
 .gallery-item.empty {

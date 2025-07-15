@@ -1,3 +1,52 @@
+// Video Darkening Effect on Scroll
+function initVideoScrollEffect() {
+    const heroVideo = document.querySelector('.hero-bg-fixed');
+    const heroVideoOverlay = document.querySelector('.hero-bg-fixed::after');
+    
+    if (!heroVideo) return;
+    
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+        
+        // Tính toán opacity dựa trên vị trí scroll
+        // Từ 0 đến 100vh scroll, opacity tăng từ 0 đến 0.7
+        const opacity = Math.min(scrollY / windowHeight * 0.7, 0.7);
+        
+        // Áp dụng overlay tối
+        heroVideo.style.setProperty('--overlay-opacity', opacity);
+        
+        // Hoặc sử dụng filter brightness
+        const brightness = Math.max(1 - (scrollY / windowHeight * 0.5), 0.5);
+        heroVideo.querySelector('iframe').style.filter = `brightness(${brightness})`;
+    });
+}
+
+// Hide Hero Loading
+function hideHeroLoading() {
+    const loadingOverlay = document.getElementById('hero-loading');
+    if (loadingOverlay) {
+        loadingOverlay.classList.add('fade-out');
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 300);
+    }
+}
+
+// Vimeo Player Ready Handler
+window.addEventListener('message', function(event) {
+    if (event.data && typeof event.data === 'string') {
+        try {
+            const data = JSON.parse(event.data);
+            if (data.event === 'ready') {
+                hideHeroLoading();
+            }
+        } catch (e) {
+            // Ignore parsing errors
+        }
+    }
+});
+
 // Component Loader - Load HTML components into the main page
 class ComponentLoader {
     static async loadComponent(componentPath, targetId) {
@@ -173,7 +222,56 @@ fetchYouTubeTitle('6URs9GMbSf8', 'work-video-3-title');
 fetchYouTubeTitle('oRlVs-3AuxE', 'work-video-4-title');
 fetchYouTubeTitle('XyMhh_qggus', 'work-video-5-title');
 
+// Scroll Indicator Click Handler
+function initScrollIndicator() {
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => {
+            const selectedWorksSection = document.querySelector('.selected-works-section');
+            if (selectedWorksSection) {
+                selectedWorksSection.scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            }
+        });
+    }
+}
+
+// Gallery Image Sizing
+function initGalleryImageSizing() {
+    const galleryItems = document.querySelectorAll('.gallery-item img');
+    
+    galleryItems.forEach(img => {
+        img.onload = function() {
+            const aspectRatio = this.naturalHeight / this.naturalWidth;
+            
+            // Nếu ảnh có chiều dài lớn hơn rộng (portrait)
+            if (aspectRatio > 1) {
+                this.style.width = 'auto';
+                this.style.height = '100%';
+                this.style.objectFit = 'cover';
+            } else {
+                // Landscape hoặc square
+                this.style.width = '100%';
+                this.style.height = '100%';
+                this.style.objectFit = 'cover';
+            }
+        };
+        
+        // Trigger onload if image is already loaded
+        if (img.complete) {
+            img.onload();
+        }
+    });
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     ComponentLoader.loadAllComponents();
+    // Initialize video scroll effect after components load
+    setTimeout(() => {
+        initVideoScrollEffect();
+        initScrollIndicator();
+        initGalleryImageSizing();
+    }, 500);
 });
