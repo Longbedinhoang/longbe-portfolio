@@ -157,7 +157,8 @@ class ComponentLoader {
             this.loadComponent('components/Header.html', 'header-container'),
             this.loadComponent('pages/SelectedWorksSection.html', 'works-container'),
             this.loadComponent('pages/VisualGallerySection.html', 'gallery-container'),
-            this.loadComponent('components/Footer.html', 'footer-container')
+            this.loadComponent('components/Footer.html', 'footer-container'),
+            this.loadComponent('components/VideoOverlay.html', 'video-overlay-container')
         ];
         
         // Only load hero section if not on mobile
@@ -236,27 +237,46 @@ class NavigationManager {
   function openVideoOverlay(videoSrc) {
     var overlay = document.getElementById('video-overlay');
     var iframe = overlay.querySelector('iframe');
-    overlay.style.display = 'flex';
+    overlay.classList.add('active');
     iframe.src = videoSrc;
+    document.body.classList.add('video-overlay-open');
+    
+    // Add escape key listener
+    document.addEventListener('keydown', handleEscapeKey);
   }
   
   // Hàm đóng overlay và dừng video
   function closeVideoOverlay() {
     var overlay = document.getElementById('video-overlay');
     var iframe = overlay.querySelector('iframe');
-    overlay.style.display = 'none';
+    overlay.classList.remove('active');
     iframe.src = '';
+    document.body.classList.remove('video-overlay-open');
+    
+    // Remove escape key listener
+    document.removeEventListener('keydown', handleEscapeKey);
   }
   
-  // Gán sự kiện cho nút đóng và overlay
+  // Handle escape key
+  function handleEscapeKey(event) {
+    if (event.key === 'Escape') {
+      closeVideoOverlay();
+    }
+  }
+  
+  // Gán sự kiện cho nút đóng và overlay backdrop
   function setupVideoOverlayEvents() {
     var overlay = document.getElementById('video-overlay');
     var closeBtn = document.getElementById('close-video-overlay');
+    var backdrop = overlay.querySelector('.video-overlay-backdrop');
+    
     if (closeBtn && overlay) {
       closeBtn.onclick = closeVideoOverlay;
-      overlay.onclick = function(e) {
-        if (e.target === overlay) closeVideoOverlay();
-      };
+      
+      // Click on backdrop to close
+      if (backdrop) {
+        backdrop.onclick = closeVideoOverlay;
+      }
     }
   }
   
@@ -298,11 +318,12 @@ class NavigationManager {
     } else if (document.getElementById('video-overlay')) {
       initVideoOverlay();
     } else {
-      setTimeout(waitForDOM, 200);
+      setTimeout(waitForDOM, 100);
     }
   }
   
-  waitForDOM();
+  // Wait for components to load before initializing
+  setTimeout(waitForDOM, 500);
   
   // Export global để bạn có thể gọi openVideoOverlay(src) ở bất kỳ đâu
   window.openVideoOverlay = openVideoOverlay;
